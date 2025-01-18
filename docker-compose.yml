@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  data_collection_service:
+    image: python:3
+    container_name: data_collector_container
+    build:
+      context: ./data_collection_module
+    command: "sh -c 'pip install -r requirements.txt && python app.py'"
+    environment:
+      - DATABASE_URL = "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db_service/${POSTGRES_DB}"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 512M
+        reservations:
+          cpus: "0.05"
+          memory: 128M
+    depends_on:
+      - service-db
+    restart: unless-stopped
+
+  db_service:
+    image: postgres
+    container_name: data_base_container
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ${DB_INIT_SCRIPT}:/docker-entrypoint-initdb.d/create_db.sql
+      - ${DB_VOLUME}:/var/lib/postgresql/data
+    restart: unless-stopped
+
+
+volumes:
+  db-data:
