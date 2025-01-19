@@ -5,6 +5,8 @@ services:
     volumes:
       - ./data_collection_module:/app
     working_dir: /app
+    env_file:
+      - .env
     environment:
       - DATABASE_URL = "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db_service/${POSTGRES_DB}"
     command: "sh -c 'pip install -r requirements.txt && python app.py'"
@@ -24,6 +26,8 @@ services:
     image: postgres
     container_name: data_base_container
     shm_size: 128mb
+    env_file:
+      - .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
