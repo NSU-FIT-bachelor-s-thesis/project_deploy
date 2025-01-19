@@ -9,7 +9,7 @@ services:
       - .env
     environment:
       - DATABASE_URL = "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db_service/${POSTGRES_DB}"
-    command: "sh -c 'pip install -r requirements.txt && additional_programs/transfer_products_from_file_to_db.py && python app.py'"
+    command: "sh -c 'pip install -r requirements.txt && python additional_programs/transfer_products_from_file_to_db.py && python app.py'"
     deploy:
       resources:
         limits:
