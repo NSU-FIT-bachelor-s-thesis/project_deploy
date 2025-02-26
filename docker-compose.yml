@@ -22,6 +22,55 @@ services:
       - db_service
     restart: unless-stopped
 
+  integration_service:
+    image: python:3
+    container_name: integration_module_container
+    volumes:
+      - ./integration_module:/app
+    working_dir: /app
+    env_file:
+      - .env
+    environment:
+      - "DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db_service/${POSTGRES_DB}"
+      - "PREDICTOR_PORT=${PREDICTOR_PORT}"
+    ports:
+      - "8080:8080"
+    command: "sh -c 'pip install -r requirements.txt && python app.py'"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 512M
+        reservations:
+          cpus: "0.05"
+          memory: 128M
+    depends_on:
+      - db_service
+      - analysis_and_forecasting_service
+    restart: unless-stopped
+
+  analysis_and_forecasting_service:
+    image: python:3
+    container_name: analysis_and_forecasting_module_container
+    volumes:
+      - ./analysis_and_forecasting_module:/app
+    working_dir: /app
+    env_file:
+      - .env
+    environment:
+      - "PREDICTOR_PORT=${PREDICTOR_PORT}"
+    command: "sh -c 'pip install -r requirements.txt && python predictor.py'"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 512M
+        reservations:
+          cpus: "0.05"
+          memory: 128M
+    depends_on:
+    restart: unless-stopped
+
   db_service:
     image: postgres
     container_name: data_base_container
