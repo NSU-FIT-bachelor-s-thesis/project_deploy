@@ -36,7 +36,7 @@ services:
       - "INPUT_WINDOW_LENGTH=${INPUT_WINDOW_LENGTH}"
       - "OUTPUT_WINDOW_LENGTH=${OUTPUT_WINDOW_LENGTH}"
     ports:
-      - "8080:8080"
+      - "8080:8000"
     command: "sh -c 'pip install -r requirements.txt && python app.py'"
     deploy:
       resources:
