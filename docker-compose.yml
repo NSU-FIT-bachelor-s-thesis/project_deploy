@@ -63,14 +63,14 @@ services:
       - "PREDICTOR_PORT=${PREDICTOR_PORT}"
       - "INPUT_WINDOW_LENGTH=${INPUT_WINDOW_LENGTH}"
       - "OUTPUT_WINDOW_LENGTH=${OUTPUT_WINDOW_LENGTH}"
-    command: "sh -c 'pip install -r requirements.txt && python predictor.py'"
+    command: "sh -c 'pip install -r predictor_only_requirements.txt && python predictor.py'"
     deploy:
       resources:
         limits:
           cpus: "1.00"
-          memory: 512M
+          memory: 2G
         reservations:
-          cpus: "0.05"
+          cpus: "0.5"
           memory: 128M
     restart: unless-stopped
 
