@@ -9,7 +9,7 @@ services:
       - .env
     environment:
       - "DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db_service/${POSTGRES_DB}"
-    command: "sh -c 'pip install -r requirements.txt && python transfer_products_from_file_to_db.py && python app.py'"
+    command: "bash -c 'python3 -m venv myenv && source myenv/bin/activate && pip install -r requirements.txt && python3 transfer_products_from_file_to_db.py && python app.py'"
     deploy:
       resources:
         limits:
@@ -37,7 +37,7 @@ services:
       - "OUTPUT_WINDOW_LENGTH=${OUTPUT_WINDOW_LENGTH}"
     ports:
       - "8080:8000"
-    command: "sh -c 'pip install -r requirements.txt && python app.py'"
+    command: "bash -c 'python3 -m venv myenv && source myenv/bin/activate && pip install -r requirements.txt && python3 app.py'"
     deploy:
       resources:
         limits:
@@ -63,7 +63,7 @@ services:
       - "PREDICTOR_PORT=${PREDICTOR_PORT}"
       - "INPUT_WINDOW_LENGTH=${INPUT_WINDOW_LENGTH}"
       - "OUTPUT_WINDOW_LENGTH=${OUTPUT_WINDOW_LENGTH}"
-    command: "sh -c 'python3 -m venv myenv && source myenv/bin/activate && pip install -r requirements.txt && python predictor.py'"
+    command: "bash -c 'python3 -m venv myenv && source myenv/bin/activate && pip install -r requirements.txt && python3 predictor.py'"
     deploy:
       resources:
         limits:
