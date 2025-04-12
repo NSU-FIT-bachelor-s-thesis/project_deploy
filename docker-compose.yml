@@ -33,10 +33,10 @@ services:
     environment:
       - "DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db_service/${POSTGRES_DB}"
       - "PREDICTOR_PORT=${PREDICTOR_PORT}"
-      - "INPUT_WINDOW_LENGTH=${INPUT_WINDOW_LENGTH}"
-      - "OUTPUT_WINDOW_LENGTH=${OUTPUT_WINDOW_LENGTH}"
+      - "MIN_INPUT_WINDOW_SIZE=${MIN_INPUT_WINDOW_SIZE}"
+      - "MAX_INPUT_WINDOW_SIZE=${MAX_INPUT_WINDOW_SIZE}"
     ports:
-      - "8080:8000"
+      - "8000:8000"
     command: "bash -c 'python3 -m venv myenv && source myenv/bin/activate && pip install -r requirements.txt && python3 app.py'"
     deploy:
       resources:
@@ -51,19 +51,17 @@ services:
       - analysis_and_forecasting_service
     restart: unless-stopped
 
-  analysis_and_forecasting_service:
+  prophet_forecasting_module:
     image: python:3
-    container_name: analysis_and_forecasting_module_container
+    container_name: prophet_forecasting_container
     volumes:
-      - ./analysis_and_forecasting_module:/app
+      - ./prophet_forecasting_module:/app
     working_dir: /app
     env_file:
       - .env
     environment:
       - "PREDICTOR_PORT=${PREDICTOR_PORT}"
-      - "INPUT_WINDOW_LENGTH=${INPUT_WINDOW_LENGTH}"
-      - "OUTPUT_WINDOW_LENGTH=${OUTPUT_WINDOW_LENGTH}"
-    command: "bash -c 'python3 -m venv myenv && source myenv/bin/activate && pip install -r requirements.txt && python3 predictor.py'"
+    command: "bash -c 'python3 -m venv myenv && source myenv/bin/activate && pip install -r requirements.txt && python3 prophet_forecasting_service.py'"
     deploy:
       resources:
         limits:
@@ -84,8 +82,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5432:5432"
+#    ports:
+#      - "5432:5432"
     volumes:
       - ${DB_INIT_SCRIPT}:/docker-entrypoint-initdb.d/create_db.sql
       - ./db_data:/var/lib/postgresql/data
