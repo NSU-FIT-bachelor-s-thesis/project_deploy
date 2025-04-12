@@ -48,7 +48,7 @@ services:
           memory: 128M
     depends_on:
       - db_service
-      - analysis_and_forecasting_service
+      - prophet_forecasting_module
     restart: unless-stopped
 
   prophet_forecasting_module:
