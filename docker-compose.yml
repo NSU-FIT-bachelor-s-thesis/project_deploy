@@ -33,6 +33,7 @@ services:
     environment:
       - "DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db_service/${POSTGRES_DB}"
       - "PREDICTOR_PORT=${PREDICTOR_PORT}"
+      - "PREDICTOR_HOST=prophet_forecasting_module"
       - "MIN_INPUT_WINDOW_SIZE=${MIN_INPUT_WINDOW_SIZE}"
       - "MAX_INPUT_WINDOW_SIZE=${MAX_INPUT_WINDOW_SIZE}"
     ports:
